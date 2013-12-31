@@ -2,7 +2,7 @@
  * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
  * Copyright (C) 2013 Poslab Co. Ltd.
  *
- * Configuration settings for the MX6Q Savage board.
+ * Configuration settings for the MX6DL Savage board.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,8 +20,8 @@
  * MA 02111-1307 USA
  */
 
-#ifndef MX6Q_SAVAGE_ANDROID_H
-#define MX6Q_SAVAGE_ANDROID_H
+#ifndef MX6DL_SAVAGE_ANDROID_H
+#define MX6DL_SAVAGE_ANDROID_H
 
 #include <asm/arch/mx6.h>
 #include "mx6dl_savage.h"
