@@ -3343,6 +3343,10 @@ mx6q_sabrelite_android_config 		\
 mx6q_sabrelite_mfg_config   : unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 mx6q_sabrelite freescale mx6
 
+mx6solo_savage_config			\
+mx6solo_savage_android_config   : unconfig
+	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 mx6s_savage freescale mx6
+
 mx6dl_savage_config			\
 mx6dl_savage_mfg_config			\
 mx6dl_savage_android_config 		\
