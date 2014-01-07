@@ -99,8 +99,8 @@ static enum boot_device boot_dev;
 extern int sata_curr_device;
 
 #ifdef CONFIG_VIDEO_MX5
-extern unsigned char fsl_bmp_reversed_600x400[];
-extern int fsl_bmp_reversed_600x400_size;
+extern unsigned char savage_bmp_600x400[];
+extern int savage_bmp_600x400_size;
 extern int g_ipu_hw_rev;
 
 #if defined(CONFIG_BMP_8BPP)
@@ -112,7 +112,7 @@ unsigned short colormap[16777216];
 #endif
 
 static struct pwm_device pwm0 = {
-	.pwm_id = 0,
+	.pwm_id = 2,
 	.pwmo_invert = 0,
 };
 
@@ -386,21 +386,6 @@ static void setup_uart(void)
 #ifdef CONFIG_VIDEO_MX5
 void setup_lvds_poweron(void)
 {
-	int reg;
-	/* AUX_5V_EN: GPIO(6, 10) */
-#ifdef CONFIG_MX6DL
-	mxc_iomux_v3_setup_pad(MX6DL_PAD_NANDF_RB0__GPIO_6_10);
-#else
-	mxc_iomux_v3_setup_pad(MX6Q_PAD_NANDF_RB0__GPIO_6_10);
-#endif
-
-	reg = readl(GPIO6_BASE_ADDR + GPIO_GDIR);
-	reg |= (1 << 10);
-	writel(reg, GPIO6_BASE_ADDR + GPIO_GDIR);
-
-	reg = readl(GPIO6_BASE_ADDR + GPIO_DR);
-	reg |= (1 << 10);
-	writel(reg, GPIO6_BASE_ADDR + GPIO_DR);
 }
 #endif
 
@@ -1397,24 +1382,33 @@ void lcd_enable(void)
 	*/
 	g_ipu_hw_rev = IPUV3_HW_REV_IPUV3H;
 
-	imx_pwm_config(pwm0, 25000, 50000);
-	imx_pwm_enable(pwm0);
+//	imx_pwm_config(pwm0, 25000, 50000);
+//	imx_pwm_enable(pwm0);
 
 #if defined CONFIG_MX6Q
 	/* PWM backlight */
-	mxc_iomux_v3_setup_pad(MX6Q_PAD_SD1_DAT3__PWM1_PWMO);
+	//mxc_iomux_v3_setup_pad(MX6Q_PAD_SD1_DAT1__PWM3_PWMO);
+	mxc_iomux_v3_setup_pad(MX6Q_PAD_SD1_DAT1__GPIO_1_17);
 	/* LVDS panel CABC_EN0 */
 	mxc_iomux_v3_setup_pad(MX6Q_PAD_NANDF_CS2__GPIO_6_15);
 	/* LVDS panel CABC_EN1 */
 	mxc_iomux_v3_setup_pad(MX6Q_PAD_NANDF_CS3__GPIO_6_16);
 #elif defined CONFIG_MX6DL
 	/* PWM backlight */
-	mxc_iomux_v3_setup_pad(MX6DL_PAD_SD1_DAT3__PWM1_PWMO);
+	//mxc_iomux_v3_setup_pad(MX6DL_PAD_SD1_DAT1__PWM3_PWMO);
+	mxc_iomux_v3_setup_pad(MX6DL_PAD_SD1_DAT1__GPIO_1_17);
 	/* LVDS panel CABC_EN0 */
 	mxc_iomux_v3_setup_pad(MX6DL_PAD_NANDF_CS2__GPIO_6_15);
 	/* LVDS panel CABC_EN1 */
 	mxc_iomux_v3_setup_pad(MX6DL_PAD_NANDF_CS3__GPIO_6_16);
 #endif
+	reg = readl(GPIO1_BASE_ADDR + GPIO_GDIR);
+	reg |= (1 << 17);
+	writel(reg, GPIO1_BASE_ADDR + GPIO_GDIR);
+
+	reg = readl(GPIO1_BASE_ADDR + GPIO_DR);
+	reg |= (1 << 17);
+	writel(reg, GPIO1_BASE_ADDR + GPIO_DR);
 	/*
 	 * Set LVDS panel CABC_EN0 to low to disable
 	 * CABC function. This function will turn backlight
@@ -1423,23 +1417,11 @@ void lcd_enable(void)
 	 * backlight phenomena.
 	 */
 	reg = readl(GPIO6_BASE_ADDR + GPIO_GDIR);
-	reg |= (1 << 15);
+	reg |= ((1 << 15) | (1 << 16));
 	writel(reg, GPIO6_BASE_ADDR + GPIO_GDIR);
 
 	reg = readl(GPIO6_BASE_ADDR + GPIO_DR);
-	reg &= ~(1 << 15);
-	writel(reg, GPIO6_BASE_ADDR + GPIO_DR);
-
-	/*
-	 * Set LVDS panel CABC_EN1 to low to disable
-	 * CABC function.
-	 */
-	reg = readl(GPIO6_BASE_ADDR + GPIO_GDIR);
-	reg |= (1 << 16);
-	writel(reg, GPIO6_BASE_ADDR + GPIO_GDIR);
-
-	reg = readl(GPIO6_BASE_ADDR + GPIO_DR);
-	reg &= ~(1 << 16);
+	reg |= ((1 << 15) | (1 << 16));
 	writel(reg, GPIO6_BASE_ADDR + GPIO_DR);
 
 	/* Disable ipu1_clk/ipu1_di_clk_x/ldb_dix_clk. */
@@ -1660,10 +1642,10 @@ void setup_splash_image(void)
 
 #if defined(CONFIG_ARCH_MMU)
 		addr = ioremap_nocache(iomem_to_phys(addr),
-				fsl_bmp_reversed_600x400_size);
+				savage_bmp_600x400_size);
 #endif
-		memcpy((char *)addr, (char *)fsl_bmp_reversed_600x400,
-				fsl_bmp_reversed_600x400_size);
+		memcpy((char *)addr, (char *)savage_bmp_600x400,
+				savage_bmp_600x400_size);
 	}
 }
 #endif
