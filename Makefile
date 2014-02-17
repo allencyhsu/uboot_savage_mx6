@@ -3352,7 +3352,7 @@ mx6dl_savage_mfg_config			\
 mx6dl_savage_android_config 		\
 mx6q_savage_config			\
 mx6q_savage_android_config 		\
-mx6q_savgae_mfg_config   : unconfig
+mx6q_savage_mfg_config   : unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 mx6q_savage freescale mx6
 
 mx6dl_hdmidongle_config			\
